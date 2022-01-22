@@ -13,27 +13,27 @@ router.get('/analyze/:id', function(req, res, next) {
           {
               ip = '127.0.0.1';
           }
-
-            let selectQuery = `SELECT \`id\`,\`link\` FROM \`analyzes\` WHERE id = '${id}';`
-            db.connection.query(selectQuery,function (error, results, fields) {
+         let selectQuery = `SELECT \`id\`,\`link\` FROM \`analyzes\` WHERE id = '${id}';`
+        db.connection.query(selectQuery,function (error, results, fields) {
+            if (error) {
+                console.log(error.code);
+                return res.status(500).json({'error':error.code});
+            }
+            if (!results.length)
+            {
+                return res.status(500).json({'error':'not found'});
+            }
+            let link = results[0].link;
+            let sql= `INSERT INTO \`analyze_logs\` (\`id\`, \`analyze_id\`, \`ip\`, \`created_at\`, \`updated_at\`) VALUES (NULL,'${results[0].id}','${ip}','${date_ob}','${date_ob}')`;
+            db.connection.query(sql,function (error, results, fields) {
                 if (error) {
                     console.log(error.code);
                     return res.status(500).json({'error':error.code});
                 }
-                console.log(results,results.link,fields);
-                res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-                return res.status(200).json({'status':'ok'});
+                return res.redirect(link);
             });
+        });
 
-          // let sql= `INSERT INTO \`analyze_logs\` (\`id\`, \`analyze_id\`, \`ip\`, \`created_at\`, \`updated_at\`) VALUES (NULL,'${id}','${ip}','${date_ob}','${date_ob}')`;
-          // db.connection.query(sql,function (error, results, fields) {
-          //     if (error) {
-          //         console.log(error.code);
-          //         return res.status(500).json({'error':error.code});
-          //     }
-          //     res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-          //     return res.status(200).json({'status':'ok'});
-          // });
 });
 router.get('/analyze/create/link/:user/:order', function(req, res, next) {
     let date_ob =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
@@ -48,7 +48,8 @@ router.get('/analyze/create/link/:user/:order', function(req, res, next) {
             return res.status(500).json({'error':error.code});
         }
         res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-        return res.status(200).json({'status':'ok'});
+        // console.log(results.insertId,);
+        return res.status(200).json({'status':'ok','id':results.insertId});
     });
 });
 module.exports = router;
