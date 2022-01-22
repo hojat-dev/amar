@@ -13,7 +13,7 @@ router.get('/analyze/:id', function(req, res, next) {
               ip = '127.0.0.1';
           }
          let selectQuery = `SELECT \`id\`,\`link\` FROM \`analyzes\` WHERE id = '${id}';`
-        db.connection.query(selectQuery,function (error, results, fields) {
+         db.connection.query(selectQuery,function (error, results, fields) {
             if (error) {
                 return res.status(500).json({'error':error.code});
             }
@@ -29,7 +29,7 @@ router.get('/analyze/:id', function(req, res, next) {
                 }
                 return res.redirect(link);
             });
-        });
+         });
 });
 router.get('/analyze/create/link/:user/:order', function(req, res, next) {
     let date_ob =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
@@ -44,6 +44,7 @@ router.get('/analyze/create/link/:user/:order', function(req, res, next) {
         }
         res.header("Cache-Control", "no-cache, no-store, must-revalidate");
         return res.status(200).json({'status':'ok','id':results.insertId});
+        //comment
     });
 });
 module.exports = router;
