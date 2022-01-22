@@ -9,14 +9,12 @@ router.get('/analyze/:id', function(req, res, next) {
           let date_ob =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
           let id = req.params.id;
           let ip = req.socket.remoteAddress ? req.socket.remoteAddress : req.connection.localAddress;
-          if (ip == '::1')
-          {
+          if (ip == '::1') {
               ip = '127.0.0.1';
           }
          let selectQuery = `SELECT \`id\`,\`link\` FROM \`analyzes\` WHERE id = '${id}';`
         db.connection.query(selectQuery,function (error, results, fields) {
             if (error) {
-                console.log(error.code);
                 return res.status(500).json({'error':error.code});
             }
             if (!results.length)
@@ -27,13 +25,11 @@ router.get('/analyze/:id', function(req, res, next) {
             let sql= `INSERT INTO \`analyze_logs\` (\`id\`, \`analyze_id\`, \`ip\`, \`created_at\`, \`updated_at\`) VALUES (NULL,'${results[0].id}','${ip}','${date_ob}','${date_ob}')`;
             db.connection.query(sql,function (error, results, fields) {
                 if (error) {
-                    console.log(error.code);
                     return res.status(500).json({'error':error.code});
                 }
                 return res.redirect(link);
             });
         });
-
 });
 router.get('/analyze/create/link/:user/:order', function(req, res, next) {
     let date_ob =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
