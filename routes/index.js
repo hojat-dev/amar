@@ -36,7 +36,6 @@ router.get('/analyze/create/link/:user/:order', function(req, res, next) {
     let user = req.params.user;
     let order = req.params.order;
     let url = req.query.url;
-    console.log(user,order,url);
     let sql = `INSERT INTO \`analyzes\` (\`id\`, \`user_id\`, \`order_id\`, \`link\`, \`total\`, \`created_at\`, \`updated_at\`) VALUES (NULL, '${user}', '${order}', '${url}', '0', '${date_ob}','${date_ob}');`;
     db.connection.query(sql,function (error, results, fields) {
         if (error) {
@@ -44,7 +43,6 @@ router.get('/analyze/create/link/:user/:order', function(req, res, next) {
             return res.status(500).json({'error':error.code});
         }
         res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-        // console.log(results.insertId,);
         return res.status(200).json({'status':'ok','id':results.insertId});
     });
 });
